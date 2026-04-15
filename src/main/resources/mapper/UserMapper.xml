@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 1. namespace 必须写你 UserMapper 接口的全类名，和项目包名完全一致 -->
+<mapper namespace="org.example.mapper.UserMapper">
+
+    <!-- 示例：自定义分页查询方法（对应官方文档的 selectPageVo） -->
+    <!-- id 必须和 Mapper 接口里的方法名完全一致 -->
+    <!-- resultType 写你的 UserVO 全类名 -->
+    <select id="selectPageVo" resultType="org.example.DTO.UserVO">
+        SELECT id, name, age, email
+        FROM `user`
+        WHERE id= #{id}
+    </select>
+
+    <!-- 可以在这里继续添加其他自定义 SQL -->
+
+</mapper>
