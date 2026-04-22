@@ -2,7 +2,9 @@ package org.example.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.example.context.UserContext;
 import org.example.entity.User;
+import org.example.mapper.UserMapper;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    @Autowired
+    private UserMapper userMapper;
     @Autowired
     private UserService userService;
 
@@ -28,10 +32,10 @@ public class UserController {
     }
 
     // 3. 【MP自带】查询所有用户（你的5条数据全查出来）
-    @GetMapping("/list")
+  /*  @GetMapping("/list")
     public List<User> getUserList() {
         return userService.list();
-    }
+    }*/
 
     // 4. 【MP自带】分页查询（比如第1页，每页2条）
     @GetMapping("/page")
@@ -56,5 +60,24 @@ public class UserController {
     @GetMapping("/age/{minAge}")
     public List<User> getUsersByAge(@PathVariable Integer minAge) {
         return userService.getUsersByAge(minAge);
+    }
+
+
+    // 数据权限分离
+    @GetMapping("/list")
+    public List<User> list(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("role") String role) {
+
+        try {
+            // 设置当前用户
+            UserContext.set(userId, role);
+
+            // 直接查
+            return userMapper.selectList(null);
+
+        } finally {
+            UserContext.clear();
+        }
     }
 }
