@@ -1,4 +1,4 @@
-# 服务器端口配置
+
 server:
   port: 8080
 
@@ -10,14 +10,33 @@ spring:
     username: root
     password: 123456
 
-# MyBatis-Plus 核心配置
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true # 开启下划线转驼峰（数据库 user_name 对应实体 userName）
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印 SQL 日志，方便开发调试
-  global-config:
-    db-config:
-      id-type: auto # 主键自增策略（对应数据库 id 的 AUTO_INCREMENT）
-      #xml映射
-  mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: org.example.entity
+  # MyBatis-Plus 核心配置
+  mybatis-plus:
+    configuration:
+      map-underscore-to-camel-case: true
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    global-config:
+      db-config:
+        id-type: auto
+    mapper-locations: classpath:mapper/*.xml
+    type-aliases-package: org.example.entity
+
+
+  # RabbitMQ 配置
+  rabbitmq:
+    host: 47.116.136.128
+    port: 5672
+    username: admin
+    password: admin123
+    listener:
+      simple:
+        concurrency: 5
+        max-concurrency: 10
+        prefetch: 1
+        acknowledge-mode: manual
+  # redis 配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 123456

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.example.context.UserContext;
 import org.example.entity.User;
 import org.example.mapper.UserMapper;
+import org.example.service.draw.DrawService;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DrawService drawService;
 
     // 1. 【MP自带】新增用户
     @PostMapping("/save")
@@ -79,5 +82,12 @@ public class UserController {
         } finally {
             UserContext.clear();
         }
+    }
+    //redis原子化扣减库存
+    @GetMapping("/draw")
+    public String draw(@RequestParam Long userId,@RequestParam String prompt){
+        return drawService.draw(userId,prompt);
+
+
     }
 }

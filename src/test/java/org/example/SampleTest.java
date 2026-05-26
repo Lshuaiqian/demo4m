@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.example.DTO.PageVO;
 import org.example.DTO.UserVO;
+import org.example.config.RabbitmqConfig;
 import org.example.entity.User;
 import org.example.mapper.UserMapper;
 import org.example.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,6 +23,8 @@ public class SampleTest {
     private UserMapper userMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Test
     public void testSelect() {
@@ -29,6 +33,7 @@ public class SampleTest {
         Assert.isTrue(5 == userList.size(), "");
         userList.forEach(System.out::println);
     }
+
     @Test
     void testPage() {
         // 1. 构建分页
@@ -45,6 +50,7 @@ public class SampleTest {
         // 输出你自己的 PageVO
         System.out.println(pageVO);
     }
+
     @Test
     public void testCustomPage() {
         // 1. 构建分页参数：第1页，每页5条
@@ -59,6 +65,7 @@ public class SampleTest {
         System.out.println("总条数：" + pageVO.getTotal());
         System.out.println("数据：" + pageVO.getRecords());
     }
+
     @Test
     void testSaveUser() {
         User newUser = new User();
@@ -68,6 +75,7 @@ public class SampleTest {
         boolean save = userService.save(newUser);
         System.out.println("新增是否成功：" + save); // 输出 true
     }
+
     @Test
     void testPageUser() {
         Page<User> page = new Page<>(1, 2);
@@ -85,4 +93,14 @@ public class SampleTest {
         userList.forEach(System.out::println);
     }
 
+    @Test
+    void testSendMessage() {
+        String task = "hello rabbitmq";
+        rabbitTemplate.convertAndSend(
+                RabbitmqConfig.DRAW_EXCHANGE,    // 交换机
+                RabbitmqConfig.DRAW_ROUTING_KEY, // 路由键
+                task                              // 消息内容
+        );
+        System.out.println("消息已发送: " + task);
+    }
 }

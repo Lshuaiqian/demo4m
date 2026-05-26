@@ -12,4 +12,5 @@ public class User {
     private String email;
     private String role;
     private Long createUserId;
+    private Long tokenBalance;
 }
